@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        #map {
+            width: 100%;
+            height: 580px;
+            box-shadow: 5px 5px 5px #888;
+        }
+    </style>
+    <link rel="stylesheet" href=" https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src=" https://unpkg.com/leaflet@1.6.0/dist/leaflet.js "></script>
+</head>
+
+<body>
+    <div id='map'>
+    </div>
+    <script>
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+                + 'contributors',
+            maxZoom: 18
+        });
+
+        var cities = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+            layers: 'ciudades',
+            format: 'image/png',
+            transparent: true,
+            tiled: true,
+            attribution: "Natural Earth",
+        });
+
+        var hidro = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+            layers: 'hidrografia',
+            format: 'image/png',
+            transparent: true,
+            tiled: true,
+            attribution: "Natural Earth",
+        });
+
+        var pais = L.tileLayer.wms("http://localhost:8080/geoserver/wms", {
+            layers: 'paises',
+            format: 'image/png',
+            transparent: true,
+            tiled: true,
+            attribution: "Natural Earth",
+        });
+
+        var map = L.map('map', {
+            center: [1.6218033672028551, -75.6107437926324],
+            zoom: 15,
+            layers: [osm, cities, hidro, pais],
+            scrollWheelZoom: false,
+        });
+        L.control.scale().addTo(map);
+
+        //Marcador universidad 
+        var marker = L.marker([1.6203656918988898, -75.60503539503092], {
+            draggable: true,
+            title: 'pincha aquí'
+        }).addTo(map)
+            .bindPopup('Universidad de la Amazonia')
+            .openPopup();
+
+        var myIcon = L.icon({
+            iconUrl: ' http://mappinggis.com/wp-content/uploads/2015/03/logo_mappinggis_32331.png',
+            iconSize: [30, 30],
+            popupAnchor: [-1, -10]
+        });
+
+        //Marcador Alcadia
+        var marker_flor = L.marker([1.614982888149762, -75.61391234877196], {
+            draggable: true,
+            title: 'pincha aquí'
+        }).addTo(map)
+            .bindPopup('Alcaldia de Florencia')
+            .openPopup();
+
+        var myIcon_flor = L.icon({
+            iconUrl: ' http://mappinggis.com/wp-content/uploads/2015/03/logo_mappinggis_32331.png',
+            iconSize: [30, 30],
+            popupAnchor: [-1, -10]
+        });
+
+        //círculo de la Alcaldia
+        var circle = L.circle([1.614982888149762, -75.61391234877196], 500, {
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5
+        }).addTo(map);
+
+        //Marcador Plaza Santander
+        var marker_Plaza = L.marker([1.614982888149762, -75.6132793474858], {
+            draggable: true,
+            title: 'pincha aquí'
+        }).addTo(map)
+            .bindPopup('Alcaldia de Florencia')
+            .openPopup();
+
+        //Limite plaza santander
+        var polygon = L.polygon([
+            [1.6153743350680179, -75.61306208856979],
+            [1.6151759304750315, -75.61368972543828],
+            [1.6145592674272466, -75.61349928861065],
+            [1.614754990936602, -75.6128796983687]
+        ]).addTo(map)
+            .bindPopup('Plaza Santander');
+
+        //Ruto casa a Universidad
+        var pointA = new L.LatLng(1.6230363993475916, -75.60573873154324);
+        var pointB = new L.LatLng(1.6204122270961476, -75.60942578332798);
+        var pointC = new L.LatLng(1.6195663889915088, -75.60709107871376);
+        var pointD = new L.LatLng(1.6189926254899676, -75.60646880626295);
+        var pointE = new L.LatLng(1.6203656918988898, -75.60503539503092);
+        var latlngs = [pointA, pointB, pointC, pointD, pointE];
+        var polyline = L.polyline(
+            latlngs, { color: 'red' }
+        )
+            .addTo(map)
+            .bindPopup('Avda. Juan Carlos I');
+    </script>
+</body>
+
+</html>
